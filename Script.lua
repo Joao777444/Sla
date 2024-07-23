@@ -36,18 +36,24 @@ local function removeESP(player)
     end
 end
 
--- Função para adicionar ESP a todos os jogadores
-local function addESPToPlayers()
+-- Função para atualizar o ESP
+local function updateESP()
     for _, player in pairs(game.Players:GetPlayers()) do
         if player ~= game.Players.LocalPlayer then
-            createESP(player)
+            if player.Character and player.Character:FindFirstChild("Head") then
+                if not player.Character:FindFirstChild("ESP") then
+                    createESP(player)
+                end
+            else
+                removeESP(player)
+            end
         end
     end
 end
 
--- Conecta eventos
+-- Atualiza o ESP para jogadores existentes e novos
 game.Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
+    player.CharacterAdded:Connect(function()
         if ESP_ENABLED then
             createESP(player)
         end
@@ -58,25 +64,8 @@ game.Players.PlayerRemoving:Connect(function(player)
     removeESP(player)
 end)
 
-game.Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
-        if ESP_ENABLED then
-            createESP(player)
-        end
-    end)
-end)
-
--- Atualiza ESP para jogadores renascendo
-game.Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
-        if ESP_ENABLED then
-            createESP(player)
-        end
-    end)
-end)
-
--- Atualiza ESP para jogadores existentes
-addESPToPlayers()
+-- Atualiza o ESP periodicamente para manter a consistência
+game:GetService('RunService').RenderStepped:Connect(updateESP)
 
 -- Script de hitbox
 game:GetService('RunService').RenderStepped:Connect(function()
@@ -214,7 +203,7 @@ local function createGUI()
         ESP_ENABLED = not ESP_ENABLED
         if ESP_ENABLED then
             ToggleESPButton.Text = "Disable ESP"
-            addESPToPlayers()
+            updateESP()
         else
             ToggleESPButton.Text = "Enable ESP"
             for _, player in pairs(game.Players:GetPlayers()) do
@@ -223,7 +212,7 @@ local function createGUI()
         end
     end)
 
-       -- Botão de Hitbox
+    -- Botão de Hitbox
     ToggleHitboxButton.Name = "ToggleHitboxButton"
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
