@@ -119,7 +119,6 @@ end)
 
 local UserInputService = game:GetService("UserInputService")
 
--- Função para criar o GUI
 local function createGUI()
     local ScreenGui = Instance.new("ScreenGui")
     local ToggleMenuButton = Instance.new("TextButton")
@@ -223,8 +222,9 @@ local function createGUI()
             ToggleESPButton.Text = "Enable ESP"
             removeESPFromPlayers()
         end
-        end
-            -- Botão de Hitbox
+    end)
+
+    -- Botão de Hitbox
     ToggleHitboxButton.Name = "ToggleHitboxButton"
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
@@ -273,4 +273,5 @@ end
 
 -- Cria o GUI
 createGUI()
+
     
