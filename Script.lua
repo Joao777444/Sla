@@ -38,6 +38,13 @@ local function createESP(player)
     end
 end
 
+-- Função para remover o ESP
+local function removeESP(player)
+    if player.Character and player.Character:FindFirstChild("ESP") then
+        player.Character:FindFirstChild("ESP"):Destroy()
+    end
+end
+
 -- Função para adicionar ESP a todos os jogadores
 local function addESPToPlayers()
     for _, player in pairs(game.Players:GetPlayers()) do
@@ -45,15 +52,6 @@ local function addESPToPlayers()
             if areDifferentTeams(player, game.Players.LocalPlayer) or player.Team == nil then
                 createESP(player)
             end
-        end
-    end
-end
-
--- Função para remover ESP de todos os jogadores
-local function removeESPFromPlayers()
-    for _, player in pairs(game.Players:GetPlayers()) do
-        if player.Character and player.Character:FindFirstChild("ESP") then
-            player.Character:FindFirstChild("ESP"):Destroy()
         end
     end
 end
@@ -66,12 +64,14 @@ game.Players.PlayerAdded:Connect(function(player)
             createESP(player)
         end
     end)
+    -- Verificar o ESP quando o jogador entra no servidor
+    if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
+        createESP(player)
+    end
 end)
 
 game.Players.PlayerRemoving:Connect(function(player)
-    if player.Character and player.Character:FindFirstChild("ESP") then
-        player.Character:FindFirstChild("ESP"):Destroy()
-    end
+    removeESP(player)
 end)
 
 -- Reaplica o ESP quando o cliente morre e renasce
@@ -223,9 +223,8 @@ local function createGUI()
             ToggleESPButton.Text = "Enable ESP"
             removeESPFromPlayers()
         end
-    end)
-
-    -- Botão de Hitbox
+        end
+            -- Botão de Hitbox
     ToggleHitboxButton.Name = "ToggleHitboxButton"
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
@@ -274,3 +273,4 @@ end
 
 -- Cria o GUI
 createGUI()
+    
