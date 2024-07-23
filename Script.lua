@@ -123,7 +123,7 @@ local function createGUI()
     ToggleMenuButton.BorderSizePixel = 2
     ToggleMenuButton.Position = UDim2.new(0, 10, 0, 10)
     ToggleMenuButton.Size = UDim2.new(0, 100, 0, 50)
-    ToggleMenuButton.Text = "Menu"
+    ToggleMenuButton.Text = "menu"
     ToggleMenuButton.TextScaled = true
     ToggleMenuButton.Font = Enum.Font.SourceSansBold
     ToggleMenuButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -257,6 +257,18 @@ local function createGUI()
             end
         end
     end)
+    
+    CreditLabel.Name = "CreditLabel"
+    CreditLabel.Parent = MenuFrame
+    CreditLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    CreditLabel.Position = UDim2.new(0, 0, 0, 180)
+    CreditLabel.Size = UDim2.new(0, 200, 0, 50)
+    CreditLabel.Text = "by: jaum"
+    CreditLabel.TextScaled = true
+    CreditLabel.Font = Enum.Font.Arcade -- Fonte "gamer"
+    CreditLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    CreditLabel.TextStrokeTransparency = 0.5
+    CreditLabel.ZIndex = 10
 end
 
 -- Cria o GUI
