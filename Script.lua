@@ -4,22 +4,13 @@ _G.Disabled = true
 local ESP_ENABLED = true
 local HITBOX_ENABLED = false
 
--- Função para verificar se os jogadores estão em times diferentes
-local function areDifferentTeams(player1, player2)
-    if player1.Team == nil or player2.Team == nil then
-        return true
-    else
-        return player1.Team ~= player2.Team
-    end
-end
-
 -- Função para criar o ESP
 local function createESP(player)
-    if player.Character and player.Character:FindFirstChild("Head") and not player.Character:FindFirstChild("ESP") then
+    if ESP_ENABLED and player.Character and player.Character:FindFirstChild("Head") then
         local BillboardGui = Instance.new("BillboardGui")
         local TextLabel = Instance.new("TextLabel")
 
-        BillboardGui.Adornee = player.Character:WaitForChild("Head")
+        BillboardGui.Adornee = player.Character.Head
         BillboardGui.Name = "ESP"
         BillboardGui.Parent = player.Character
         BillboardGui.AlwaysOnTop = true
@@ -30,10 +21,10 @@ local function createESP(player)
         TextLabel.Text = player.Name
         TextLabel.BackgroundTransparency = 1
         TextLabel.Size = UDim2.new(1, 0, 1, 0)
-        TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0) -- Cor vermelha
-        TextLabel.TextSize = 20
-        TextLabel.Font = Enum.Font.Arcade -- Fonte "gamer"
-        TextLabel.TextStrokeTransparency = 0.5
+        TextLabel.TextColor3 = Color3.fromRGB(128, 128, 128) -- Cor cinza
+        TextLabel.TextSize = 20 -- Tamanho do texto
+        TextLabel.Font = Enum.Font.Arcade -- Fonte mais "gamer"
+        TextLabel.TextStrokeTransparency = 0.5 -- Suavizar o texto
         TextLabel.ZIndex = 10
     end
 end
@@ -41,7 +32,7 @@ end
 -- Função para remover o ESP
 local function removeESP(player)
     if player.Character and player.Character:FindFirstChild("ESP") then
-        player.Character:FindFirstChild("ESP"):Destroy()
+        player.Character.ESP:Destroy()
     end
 end
 
@@ -49,38 +40,26 @@ end
 local function addESPToPlayers()
     for _, player in pairs(game.Players:GetPlayers()) do
         if player ~= game.Players.LocalPlayer then
-            if areDifferentTeams(player, game.Players.LocalPlayer) or player.Team == nil then
-                createESP(player)
-            end
+            createESP(player)
         end
     end
 end
 
 -- Conecta eventos
 game.Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
-        wait(1)
-        if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
+    player.CharacterAdded:Connect(function()
+        if ESP_ENABLED then
             createESP(player)
         end
     end)
-    -- Verificar o ESP quando o jogador entra no servidor
-    if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
-        createESP(player)
-    end
 end)
 
 game.Players.PlayerRemoving:Connect(function(player)
     removeESP(player)
 end)
 
--- Reaplica o ESP quando o cliente morre e renasce
-game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
-    wait(1)
-    if ESP_ENABLED then
-        addESPToPlayers()
-    end
-end)
+-- Cria ESP para todos os jogadores existentes
+addESPToPlayers()
 
 -- Script de hitbox
 game:GetService('RunService').RenderStepped:Connect(function()
@@ -105,11 +84,11 @@ game:GetService('RunService').RenderStepped:Connect(function()
                 pcall(function()
                     local humanoidRootPart = v.Character:FindFirstChild("HumanoidRootPart")
                     if humanoidRootPart then
-                        humanoidRootPart.Size = Vector3.new(2, 2, 1)
-                        humanoidRootPart.Transparency = 1
+                        humanoidRootPart.Size = Vector3.new(2, 2, 1) -- Tamanho padrão
+                        humanoidRootPart.Transparency = 1 -- Invisível
                         humanoidRootPart.BrickColor = BrickColor.new("Medium stone grey")
                         humanoidRootPart.Material = "Plastic"
-                        humanoidRootPart.CanCollide = false
+                        humanoidRootPart.CanCollide = false -- Garantir que não tenha colisão
                     end
                 end)
             end
@@ -119,6 +98,7 @@ end)
 
 local UserInputService = game:GetService("UserInputService")
 
+-- Função para criar o GUI
 local function createGUI()
     local ScreenGui = Instance.new("ScreenGui")
     local ToggleMenuButton = Instance.new("TextButton")
@@ -220,7 +200,9 @@ local function createGUI()
             addESPToPlayers()
         else
             ToggleESPButton.Text = "Enable ESP"
-            removeESPFromPlayers()
+            for _, player in pairs(game.Players:GetPlayers()) do
+                removeESP(player)
+            end
         end
     end)
 
@@ -234,7 +216,7 @@ local function createGUI()
     ToggleHitboxButton.TextScaled = true
     ToggleHitboxButton.Font = Enum.Font.Arcade -- Fonte "gamer"
     ToggleHitboxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ToggleHitboxButton.TextStrokeTransparency = 0.5
+        ToggleHitboxButton.TextStrokeTransparency = 0.5
     ToggleHitboxButton.ZIndex = 10
 
     ToggleHitboxButton.MouseButton1Click:Connect(function()
@@ -273,5 +255,3 @@ end
 
 -- Cria o GUI
 createGUI()
-
-    
