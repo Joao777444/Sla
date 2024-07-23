@@ -4,23 +4,18 @@ _G.Disabled = true
 local ESP_ENABLED = true
 local HITBOX_ENABLED = false
 
--- Função para verificar se há times no jogo
-local function hasTeams()
-    return #game.Teams:GetTeams() > 0
-end
-
 -- Função para verificar se os jogadores estão em times diferentes
 local function areDifferentTeams(player1, player2)
-    if hasTeams() then
-        return player1.Team ~= player2.Team
-    else
+    if player1.Team == nil or player2.Team == nil then
         return true
+    else
+        return player1.Team ~= player2.Team
     end
 end
 
 -- Função para criar o ESP
 local function createESP(player)
-    local function applyESP()
+    if player.Character and player.Character:FindFirstChild("Head") and not player.Character:FindFirstChild("ESP") then
         local BillboardGui = Instance.new("BillboardGui")
         local TextLabel = Instance.new("TextLabel")
 
@@ -35,37 +30,42 @@ local function createESP(player)
         TextLabel.Text = player.Name
         TextLabel.BackgroundTransparency = 1
         TextLabel.Size = UDim2.new(1, 0, 1, 0)
-        TextLabel.TextColor3 = Color3.fromRGB(128, 128, 128) -- Cor cinza
-        TextLabel.TextSize = 20 -- Tamanho do texto
-        TextLabel.Font = Enum.Font.SourceSansBold -- Fonte mais suave
-        TextLabel.TextStrokeTransparency = 0.5 -- Suavizar o texto
+        TextLabel.TextColor3 = Color3.fromRGB(128, 128, 128)
+        TextLabel.TextSize = 20
+        TextLabel.Font = Enum.Font.SourceSansBold
+        TextLabel.TextStrokeTransparency = 0.5
         TextLabel.ZIndex = 10
     end
-
-    if player.Character then
-        applyESP()
-    end
-
-    player.CharacterAdded:Connect(function()
-        wait(1) -- Espera um segundo para garantir que o personagem carregue completamente
-        applyESP()
-    end)
 end
 
 -- Função para adicionar ESP a todos os jogadores
 local function addESPToPlayers()
     for _, player in pairs(game.Players:GetPlayers()) do
-        if player ~= game.Players.LocalPlayer and areDifferentTeams(player, game.Players.LocalPlayer) then
-            createESP(player)
+        if player ~= game.Players.LocalPlayer then
+            if areDifferentTeams(player, game.Players.LocalPlayer) or player.Team == nil then
+                createESP(player)
+            end
+        end
+    end
+end
+
+-- Função para remover ESP de todos os jogadores
+local function removeESPFromPlayers()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("ESP") then
+            player.Character:FindFirstChild("ESP"):Destroy()
         end
     end
 end
 
 -- Conecta eventos
 game.Players.PlayerAdded:Connect(function(player)
-    if areDifferentTeams(player, game.Players.LocalPlayer) then
-        createESP(player)
-    end
+    player.CharacterAdded:Connect(function()
+        wait(1)
+        if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
+            createESP(player)
+        end
+    end)
 end)
 
 game.Players.PlayerRemoving:Connect(function(player)
@@ -81,7 +81,7 @@ addESPToPlayers()
 game:GetService('RunService').RenderStepped:Connect(function()
     if HITBOX_ENABLED then
         for _, v in pairs(game:GetService('Players'):GetPlayers()) do
-            if v.Name ~= game:GetService('Players').LocalPlayer.Name and areDifferentTeams(v, game.Players.LocalPlayer) then
+            if v.Name ~= game:GetService('Players').LocalPlayer.Name then
                 pcall(function()
                     local humanoidRootPart = v.Character:FindFirstChild("HumanoidRootPart")
                     if humanoidRootPart then
@@ -100,11 +100,11 @@ game:GetService('RunService').RenderStepped:Connect(function()
                 pcall(function()
                     local humanoidRootPart = v.Character:FindFirstChild("HumanoidRootPart")
                     if humanoidRootPart then
-                        humanoidRootPart.Size = Vector3.new(2, 2, 1) -- Tamanho padrão
-                        humanoidRootPart.Transparency = 1 -- Invisível
+                        humanoidRootPart.Size = Vector3.new(2, 2, 1)
+                        humanoidRootPart.Transparency = 1
                         humanoidRootPart.BrickColor = BrickColor.new("Medium stone grey")
                         humanoidRootPart.Material = "Plastic"
-                        humanoidRootPart.CanCollide = false -- Garantir que não tenha colisão
+                        humanoidRootPart.CanCollide = false
                     end
                 end)
             end
@@ -150,7 +150,7 @@ local function createGUI()
     MenuFrame.Size = UDim2.new(0, 200, 0, 180)
     MenuFrame.Visible = false
     MenuFrame.Active = true
-    MenuFrame.Draggable = true -- Torna o menu móvel
+    MenuFrame.Draggable = true
 
     -- Função para tornar o botão e o painel móveis
     local function makeDraggable(guiElement)
@@ -216,21 +216,16 @@ local function createGUI()
             addESPToPlayers()
         else
             ToggleESPButton.Text = "Enable ESP"
-            for _, player in pairs(game.Players:GetPlayers()) do
-                if player.Character and player.Character:FindFirstChild("ESP") then
-                    player.Character:FindFirstChild("ESP"):Destroy()
-                end
-            end
+            removeESPFromPlayers()
         end
     end)
 
-   
-       -- Botão de Hitbox
+    -- Botão de Hitbox
     ToggleHitboxButton.Name = "ToggleHitboxButton"
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
     ToggleHitboxButton.Position = UDim2.new(0, 0, 0, 60)
-    ToggleHitboxButton.Size = UDim2.new(0, 200, 0, 50)
+        ToggleHitboxButton.Size = UDim2.new(0, 200, 0, 50)
     ToggleHitboxButton.Text = "Enable Hitbox"
     ToggleHitboxButton.TextScaled = true
     ToggleHitboxButton.Font = Enum.Font.SourceSansBold
@@ -274,43 +269,3 @@ end
 
 -- Cria o GUI
 createGUI()
-
--- Garantir que o ESP seja reaplicado ao cliente após respawn
-game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    wait(1) -- Espera um segundo para garantir que o personagem carregue completamente
-    if ESP_ENABLED then
-        addESPToPlayers()
-    end
-end)
-
--- Conectar o ESP ao reaparecimento de jogadores
-for _, player in pairs(game.Players:GetPlayers()) do
-    player.CharacterAdded:Connect(function()
-        wait(1) -- Espera um segundo para garantir que o personagem carregue completamente
-        if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
-            createESP(player)
-        end
-    end)
-end
-
--- Atualizar a lista de jogadores ao entrar/saír jogadores
-game.Players.PlayerAdded:Connect(function(player)
-    if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
-        createESP(player)
-    end
-    player.CharacterAdded:Connect(function()
-        wait(1) -- Espera um segundo para garantir que o personagem carregue completamente
-        if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
-            createESP(player)
-        end
-    end)
-end)
-
-game.Players.PlayerRemoving:Connect(function(player)
-    if player.Character and player.Character:FindFirstChild("ESP") then
-        player.Character:FindFirstChild("ESP"):Destroy()
-    end
-end)
-
--- Inicialmente adicionar ESP para todos os jogadores
-addESPToPlayers()
