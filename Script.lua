@@ -47,7 +47,7 @@ end
 
 -- Conecta eventos
 game.Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function()
+    player.CharacterAdded:Connect(function(character)
         if ESP_ENABLED then
             createESP(player)
         end
@@ -58,7 +58,24 @@ game.Players.PlayerRemoving:Connect(function(player)
     removeESP(player)
 end)
 
--- Cria ESP para todos os jogadores existentes
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        if ESP_ENABLED then
+            createESP(player)
+        end
+    end)
+end)
+
+-- Atualiza ESP para jogadores renascendo
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        if ESP_ENABLED then
+            createESP(player)
+        end
+    end)
+end)
+
+-- Atualiza ESP para jogadores existentes
 addESPToPlayers()
 
 -- Script de hitbox
@@ -206,7 +223,7 @@ local function createGUI()
         end
     end)
 
-    -- Botão de Hitbox
+       -- Botão de Hitbox
     ToggleHitboxButton.Name = "ToggleHitboxButton"
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
@@ -216,7 +233,7 @@ local function createGUI()
     ToggleHitboxButton.TextScaled = true
     ToggleHitboxButton.Font = Enum.Font.Arcade -- Fonte "gamer"
     ToggleHitboxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ToggleHitboxButton.TextStrokeTransparency = 0.5
+    ToggleHitboxButton.TextStrokeTransparency = 0.5
     ToggleHitboxButton.ZIndex = 10
 
     ToggleHitboxButton.MouseButton1Click:Connect(function()
