@@ -30,9 +30,9 @@ local function createESP(player)
         TextLabel.Text = player.Name
         TextLabel.BackgroundTransparency = 1
         TextLabel.Size = UDim2.new(1, 0, 1, 0)
-        TextLabel.TextColor3 = Color3.fromRGB(128, 128, 128)
+        TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0) -- Cor vermelha
         TextLabel.TextSize = 20
-        TextLabel.Font = Enum.Font.SourceSansBold
+        TextLabel.Font = Enum.Font.Arcade -- Fonte "gamer"
         TextLabel.TextStrokeTransparency = 0.5
         TextLabel.ZIndex = 10
     end
@@ -60,7 +60,7 @@ end
 
 -- Conecta eventos
 game.Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function()
+    player.CharacterAdded:Connect(function(character)
         wait(1)
         if ESP_ENABLED and areDifferentTeams(player, game.Players.LocalPlayer) then
             createESP(player)
@@ -76,6 +76,14 @@ end)
 
 -- Cria ESP para todos os jogadores existentes
 addESPToPlayers()
+
+-- Reaplica o ESP quando o cliente morre e renasce
+game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    wait(1)
+    if ESP_ENABLED then
+        addESPToPlayers()
+    end
+end)
 
 -- Script de hitbox
 game:GetService('RunService').RenderStepped:Connect(function()
@@ -216,8 +224,8 @@ local function createGUI()
             addESPToPlayers()
         else
             ToggleESPButton.Text = "Enable ESP"
-            removeESPFromPlayers()
-        end
+            removeESPFromPlayers
+                        end
     end)
 
     -- Botão de Hitbox
@@ -225,7 +233,7 @@ local function createGUI()
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
     ToggleHitboxButton.Position = UDim2.new(0, 0, 0, 60)
-        ToggleHitboxButton.Size = UDim2.new(0, 200, 0, 50)
+    ToggleHitboxButton.Size = UDim2.new(0, 200, 0, 50)
     ToggleHitboxButton.Text = "Enable Hitbox"
     ToggleHitboxButton.TextScaled = true
     ToggleHitboxButton.Font = Enum.Font.SourceSansBold
