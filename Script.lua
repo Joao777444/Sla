@@ -112,6 +112,7 @@ local function createGUI()
     local ToggleESPButton = Instance.new("TextButton")
     local ToggleHitboxButton = Instance.new("TextButton")
     local HitboxSizeBox = Instance.new("TextBox")
+    local CreditLabel = Instance.new("TextLabel")
 
     ScreenGui.Name = "ControlPanel"
     ScreenGui.Parent = game.CoreGui
@@ -123,7 +124,7 @@ local function createGUI()
     ToggleMenuButton.BorderSizePixel = 2
     ToggleMenuButton.Position = UDim2.new(0, 10, 0, 10)
     ToggleMenuButton.Size = UDim2.new(0, 100, 0, 50)
-    ToggleMenuButton.Text = "menu"
+    ToggleMenuButton.Text = "Menu"
     ToggleMenuButton.TextScaled = true
     ToggleMenuButton.Font = Enum.Font.SourceSansBold
     ToggleMenuButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -137,49 +138,10 @@ local function createGUI()
     MenuFrame.Parent = ScreenGui
     MenuFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
     MenuFrame.Position = UDim2.new(0, 120, 0, 10)
-    MenuFrame.Size = UDim2.new(0, 200, 0, 180)
+    MenuFrame.Size = UDim2.new(0, 200, 0, 230)
     MenuFrame.Visible = false
     MenuFrame.Active = true
     MenuFrame.Draggable = true
-
-    -- Função para tornar o botão e o painel móveis
-    local function makeDraggable(guiElement)
-        local dragging, dragStart, startPos
-
-        local function updateInput(input)
-            if dragging then
-                local delta = input.Position - dragStart
-                guiElement.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            end
-        end
-
-        local function onInputBegan(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = true
-                dragStart = input.Position
-                startPos = guiElement.Position
-
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragging = false
-                    end
-                end)
-            end
-        end
-
-        local function onInputChanged(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement then
-                updateInput(input)
-            end
-        end
-
-        guiElement.InputBegan:Connect(onInputBegan)
-        UserInputService.InputChanged:Connect(onInputChanged)
-    end
-
-    -- Tornando o menu e o botão móveis
-    makeDraggable(MenuFrame)
-    makeDraggable(ToggleMenuButton)
 
     -- Abrir/fechar menu
     ToggleMenuButton.MouseButton1Click:Connect(function()
@@ -203,7 +165,7 @@ local function createGUI()
         ESP_ENABLED = not ESP_ENABLED
         if ESP_ENABLED then
             ToggleESPButton.Text = "Disable ESP"
-            updateESP()
+            addESPToPlayers()
         else
             ToggleESPButton.Text = "Enable ESP"
             for _, player in pairs(game.Players:GetPlayers()) do
@@ -257,7 +219,8 @@ local function createGUI()
             end
         end
     end)
-    
+
+    -- Label de Crédito
     CreditLabel.Name = "CreditLabel"
     CreditLabel.Parent = MenuFrame
     CreditLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
