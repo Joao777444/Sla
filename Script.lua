@@ -228,7 +228,7 @@ local function createGUI()
     CreditLabel.Size = UDim2.new(0, 200, 0, 50)
     CreditLabel.Text = "by: jaum"
     CreditLabel.TextScaled = true
-    CreditLabel.Font = Enum.Font.Arcade -- Fonte "gamer"
+    CreditLabel.Font = Enum.Font.Code
     CreditLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     CreditLabel.TextStrokeTransparency = 0.5
     CreditLabel.ZIndex = 10
