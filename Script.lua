@@ -74,9 +74,6 @@ game.Players.PlayerRemoving:Connect(function(player)
     end
 end)
 
--- Cria ESP para todos os jogadores existentes
-addESPToPlayers()
-
 -- Reaplica o ESP quando o cliente morre e renasce
 game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
     wait(1)
@@ -229,7 +226,7 @@ local function createGUI()
     end)
 
     -- Botão de Hitbox
-        ToggleHitboxButton.Name = "ToggleHitboxButton"
+    ToggleHitboxButton.Name = "ToggleHitboxButton"
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
     ToggleHitboxButton.Position = UDim2.new(0, 0, 0, 60)
