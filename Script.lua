@@ -212,7 +212,7 @@ local function createGUI()
     ToggleESPButton.Size = UDim2.new(0, 200, 0, 50)
     ToggleESPButton.Text = "Disable ESP"
     ToggleESPButton.TextScaled = true
-    ToggleESPButton.Font = Enum.Font.SourceSansBold
+    ToggleESPButton.Font = Enum.Font.Arcade -- Fonte "gamer"
     ToggleESPButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     ToggleESPButton.TextStrokeTransparency = 0.5
     ToggleESPButton.ZIndex = 10
@@ -224,19 +224,19 @@ local function createGUI()
             addESPToPlayers()
         else
             ToggleESPButton.Text = "Enable ESP"
-            removeESPFromPlayers
-                        end
+            removeESPFromPlayers()
+        end
     end)
 
     -- Botão de Hitbox
-    ToggleHitboxButton.Name = "ToggleHitboxButton"
+        ToggleHitboxButton.Name = "ToggleHitboxButton"
     ToggleHitboxButton.Parent = MenuFrame
     ToggleHitboxButton.BackgroundColor3 = Color3.new(1, 0, 0)
     ToggleHitboxButton.Position = UDim2.new(0, 0, 0, 60)
     ToggleHitboxButton.Size = UDim2.new(0, 200, 0, 50)
     ToggleHitboxButton.Text = "Enable Hitbox"
     ToggleHitboxButton.TextScaled = true
-    ToggleHitboxButton.Font = Enum.Font.SourceSansBold
+    ToggleHitboxButton.Font = Enum.Font.Arcade -- Fonte "gamer"
     ToggleHitboxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     ToggleHitboxButton.TextStrokeTransparency = 0.5
     ToggleHitboxButton.ZIndex = 10
@@ -258,7 +258,7 @@ local function createGUI()
     HitboxSizeBox.Size = UDim2.new(0, 200, 0, 50)
     HitboxSizeBox.Text = tostring(_G.HeadSize)
     HitboxSizeBox.TextScaled = true
-    HitboxSizeBox.Font = Enum.Font.SourceSansBold
+    HitboxSizeBox.Font = Enum.Font.Arcade -- Fonte "gamer"
     HitboxSizeBox.TextColor3 = Color3.fromRGB(0, 0, 0)
     HitboxSizeBox.TextStrokeTransparency = 0.5
     HitboxSizeBox.ZIndex = 10
